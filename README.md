@@ -41,7 +41,7 @@ Using pre-configured placeholders like `##UID##` or `##SITEURL##`, add dynamic f
 
 Submit an issue to the [GitHub issue tracker] in addition to / instead of the WP Support Forums.
 
-[GitHub issue tracker]: https://github.com/zaus/forms-3rdparty-integration/issues "GitHub issue tracker"
+[GitHub issue tracker]: https://github.com/zaus/forms-3rdparty-dynamicfields/issues "GitHub issue tracker"
 
 
 ### How do I add / configure a service? ###
