@@ -182,7 +182,7 @@ class Forms3rdpartyDynamicFields {
 			
 			<div class="description-body inside">
 
-				<p class="description"><?php _e('List of dynamic placeholders.  Note that only one placeholder is allowed per value, it must be marked &quote;Is Value&quote;, and you must &quot;allow hooks&quot; in each service for this plugin to work.', $P) ?></p>
+				<p class="description"><?php _e('List of dynamic placeholders.  Note that only one placeholder is allowed per value, it must be marked &quot;Is Value&quot;, and you must &quot;allow hooks&quot; in each service for this plugin to work.', $P) ?></p>
 				<table>
 					<thead>
 						<tr>
