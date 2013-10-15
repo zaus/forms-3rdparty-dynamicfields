@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, skane
-Version: 0.3
+Version: 0.3.1
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -52,6 +52,7 @@ class Forms3rdpartyDynamicFields {
 	const PAGEURL = '##PAGEURL##';
 	const REQUESTURL = "##REQUESTURL##";
 	const GETPARAM_PREFIX = "##GET:{";
+	const PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
 
 	/**
 	 * placeholder for response attachments
@@ -133,7 +134,8 @@ class Forms3rdpartyDynamicFields {
 			default:
 				if(0 === strpos($value, self::GETPARAM_PREFIX)) {
 					// strip the rest of the param mask for the get key
-					return $_GET[ substr($value, strlen(self::GETPARAM_PREFIX), -3) ];
+					$value = substr($value, self::PREFIX_LEN, -3);
+					return isset($_GET[ $value ]) ? $_GET[ $value ] : null;
 				}
 
 				break;
