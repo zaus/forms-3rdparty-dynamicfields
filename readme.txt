@@ -1,7 +1,7 @@
 === Forms: 3rd-Party Dynamic Fields ===
 Contributors: zaus, skane
 Donate link: http://drzaus.com/donate
-Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params
+Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params, referer
 Requires at least: 3.0
 Tested up to: 3.3.1
 Stable tag: trunk
@@ -11,7 +11,7 @@ Provides some dynamic field values via placeholder to plugin "Forms: 3rdparty In
 
 == Description ==
 
-Using pre-configured placeholders like `##UID##` or `##SITEURL##`, add dynamic fields to the normally map-only or static-only [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/) plugin.
+Using pre-configured placeholders like `##UID##`, `##REFERER##`, or `##SITEURL##`, add dynamic fields to the normally map-only or static-only [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/) plugin.
 
 == Installation ==
 
