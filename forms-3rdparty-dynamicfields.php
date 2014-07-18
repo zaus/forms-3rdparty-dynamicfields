@@ -5,12 +5,13 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, skane
-Version: 0.3.1
+Version: 0.3.2
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
 	0.2 attach to message
 	0.3 GET params
+	0.3.2 referer
 */
 
 
@@ -25,10 +26,10 @@ class Forms3rdpartyDynamicFields {
 		add_filter(self::B.'_service_filter_post', array(&$this, 'post_filter'), 10, 3);
 		
 		// just provides a listing of placeholders
-		add_filter('Forms3rdPartyIntegration_service_metabox', array(&$this, 'service_metabox'), 10, 4);
+		add_filter(self::B.'_service_metabox_after', array(&$this, 'service_metabox'), 10, 4);
 
 		// configure whether to attach or not, how
-		add_filter('Forms3rdPartyIntegration_service_settings', array(&$this, 'service_settings'), 10, 3);
+		add_filter(self::B.'_service_settings', array(&$this, 'service_settings'), 10, 3);
 
 		// attach to response message
 		add_filter(self::B.'_service', array(&$this, 'adjust_response'), 10, 2);
@@ -51,6 +52,7 @@ class Forms3rdpartyDynamicFields {
 	const ADMINEMAIL = '##ADMINEMAIL##';
 	const PAGEURL = '##PAGEURL##';
 	const REQUESTURL = "##REQUESTURL##";
+	const REFERER = "##REFERER##";
 	const GETPARAM_PREFIX = "##GET:{";
 	const PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
 
@@ -74,7 +76,12 @@ class Forms3rdpartyDynamicFields {
 			// TODO: better way to check and replace?
 			if( $this->is_replace($value) ) {
 				$value = $this->replace($value, $post);
-				if( false !== $this->_dynamic_attach ) $this->_dynamic_attach[$field] = sprintf(isset($service['dynamic-format']) && !empty($service['dynamic-format']) ? $service['dynamic-format'] : '%s = %s;', $field, $value);
+				if( false !== $this->_dynamic_attach ) 
+					$this->_dynamic_attach[$field] = sprintf(isset($service['dynamic-format']) && !empty($service['dynamic-format'])
+								? $service['dynamic-format']
+								: '%s = %s;'
+								, $field, print_r($value,true)
+							);
 			}
 		}// foreach $post
 
@@ -83,6 +90,8 @@ class Forms3rdpartyDynamicFields {
 	}//--	fn	post_filter
 
 	public function is_replace($value) {
+		### _log(__CLASS__ . '/' . __FUNCTION__, $value);
+		
 		// known placeholders
 		switch($value) {
 			case self::TIMESTAMP:
@@ -94,11 +103,18 @@ class Forms3rdpartyDynamicFields {
 			case self::SITENAME:
 			case self::NETWORKSITEURL:
 			case self::ADMINEMAIL:
+			case self::REFERER:
 			case self::PAGEURL:
 			case self::REQUESTURL:
 				return true;
 			default:
-				if(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
+				// because forms-3rdparty can also nest
+				if(is_array($value)) {
+					foreach($value as $k => $v) if( $this->is_replace($v) ) return true;
+				}
+
+				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
+
 				break;
 		} // switch $value
 
@@ -125,6 +141,8 @@ class Forms3rdpartyDynamicFields {
 				return get_bloginfo('name');
 			case self::NETWORKSITEURL:
 				return network_site_url();
+			case self::REFERER:
+				return $_SERVER['HTTP_REFERER'];
 			case self::ADMINEMAIL:
 				return get_bloginfo('admin_email'); // TODO: is there a way to protect against this?
 			case self::PAGEURL:
@@ -132,7 +150,13 @@ class Forms3rdpartyDynamicFields {
 			case self::REQUESTURL:
 				return sprintf('http%s://', is_ssl() ? 's' : '') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			default:
-				if(0 === strpos($value, self::GETPARAM_PREFIX)) {
+				// because forms-3rdparty can also nest
+				if(is_array($value)) {
+					foreach($value as $k => &$v) {
+						$v = replace($value, $post);
+					}
+				}
+				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) {
 					// strip the rest of the param mask for the get key
 					$value = substr($value, self::PREFIX_LEN, -3);
 					return isset($_GET[ $value ]) ? $_GET[ $value ] : null;
@@ -155,19 +179,19 @@ class Forms3rdpartyDynamicFields {
 	public function service_settings($eid, $P, $entity) {
 		?>
 
-			<fieldset><legend><span>Dynamic Fields</span></legend>
+			<fieldset><legend><span><?php _e('Dynamic Fields', $P); ?></span></legend>
 				<div class="inside">
 					<?php $field = 'dynamic-attach'; ?>
 					<div class="field">
-						<label for="<?php echo $field, '-', $eid ?>">Attach dynamic fields?</label>
+						<label for="<?php echo $field, '-', $eid ?>"><?php _e('Attach dynamic fields?', $P); ?></label>
 						<input id="<?php echo $field, '-', $eid ?>" type="checkbox" class="checkbox" name="<?php echo $P, '[', $eid, '][', $field, ']'?>" value="yes"<?php echo isset($entity[$field]) ? ' checked="checked"' : ''?> />
-						<em class="description">Whether or not to attach the dynamic fields to the regular form notification.</em>
+						<em class="description"><?php _e('Whether or not to attach the dynamic fields to the regular form notification.', $P); ?></em>
 					</div>
 					<?php $field = 'dynamic-format'; ?>
 					<div class="field">
-						<label for="<?php echo $field, '-', $eid ?>">Dynamic response value format</label>
+						<label for="<?php echo $field, '-', $eid ?>"><?php _e('Dynamic response value format', $P); ?></label>
 						<input id="<?php echo $field, '-', $eid ?>" type="text" class="text" name="<?php echo $P, '[', $eid, '][', $field, ']'?>" value="<?php echo isset($entity[$field]) ? esc_attr($entity[$field]) : '%s = %s;'?>" />
-						<em class="description">How to report each dynamic field in the form notification (e.g. <code>sprintf</code> mask like <code>%s = %s</code> for <code>$field</code> and <code>$value</code> respectively).</em>
+						<em class="description"><?php _e('How to report each dynamic field in the form notification (e.g. <code>sprintf</code> mask like <code>%s = %s</code> for <code>$field</code> and <code>$value</code> respectively).', $P); ?></em>
 					</div>
 				</div>
 			</fieldset>
@@ -179,7 +203,7 @@ class Forms3rdpartyDynamicFields {
 
 		?>
 		<div id="metabox-<?php echo self::N; ?>" class="meta-box">
-		<div class="shortcode-description postbox">
+		<div class="shortcode-description postbox" data-icon="?">
 			<h3 class="hndle"><span><?php _e('Dynamic Placeholder Examples', $P) ?></span></h3>
 			
 			<div class="description-body inside">
@@ -261,6 +285,12 @@ class Forms3rdpartyDynamicFields {
 							<td class="dyn-field"><code><?php echo $t ?></code></td>
 							<td><?php echo $this->replace($t); ?></td>
 							<td><?php _e('Current server-request url (may be same as PAGEURL if no rewrites/redirects)', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::REFERER; ?>
+							<td class="dyn-field"><code><?php echo $t ?></code></td>
+							<td><?php echo $this->replace($t); ?></td>
+							<td><?php _e('Referer for the current page', $P) ?></td>
 						</tr>
 						<tr>
 							<?php $t = self::GETPARAM_PREFIX; ?>

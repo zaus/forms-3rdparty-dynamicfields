@@ -49,7 +49,7 @@ Submit an issue to the [GitHub issue tracker] in addition to / instead of the WP
 See "base plugin" [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/).
 
 
-Expand the box "Dynamic Placeholder Examples" for allowed dynamic fields.
+Expand the box "Dynamic Placeholder Examples" below the 'save' button for allowed dynamic fields.
 
 ### How do I add GET parameters to my service post? ###
 
@@ -60,6 +60,11 @@ Use the placeholder `##GET:{urlparam}##` as the static value, which will attach 
 __None available.__
 
 ## Changelog ##
+
+### 0.3.2 ###
+* added REFERER
+* more translated text
+* handles nested values
 
 ### 0.3 ###
 GET parameters.
