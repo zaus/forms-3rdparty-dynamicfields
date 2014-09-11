@@ -50,6 +50,9 @@ __None available.__
 
 == Changelog ==
 
+= 0.3.3 =
+Minor bugfixes to pageurl and referer
+
 = 0.3.2 =
 * added REFERER
 * more translated text
