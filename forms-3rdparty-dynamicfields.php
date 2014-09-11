@@ -64,7 +64,7 @@ class Forms3rdpartyDynamicFields {
 
 	public function post_filter($post, $service, $form) {
 
-		### _log(__CLASS__ . '::' . __METHOD__, $form);
+		###_log(__CLASS__ . '::' . __METHOD__, $form);
 
 		// if(isset($service['dynamic-field']) && isset($service['dynamic-value'])) $post[$service['dynamic-field']] = $service['dynamic-value'];
 
@@ -77,13 +77,19 @@ class Forms3rdpartyDynamicFields {
 			// TODO: better way to check and replace?
 			if( $this->is_replace($value) ) {
 				$value = $this->replace($value, $post);
-				if( false !== $this->_dynamic_attach ) 
+
+				// attach ONLY the dynamic fields, since those are 'insensitive' values
+				// like page url, unique id, etc -- this is per original requirement
+				// as opposed to attaching everything to the notice
+				if( false !== $this->_dynamic_attach ) {
 					$this->_dynamic_attach[$field] = sprintf(isset($service['dynamic-format']) && !empty($service['dynamic-format'])
 								? $service['dynamic-format']
 								: '%s = %s;'
 								, $field, print_r($value,true)
 							);
+				}
 			}
+
 		}// foreach $post
 
 		
@@ -91,7 +97,7 @@ class Forms3rdpartyDynamicFields {
 	}//--	fn	post_filter
 
 	public function is_replace($value) {
-		### _log(__CLASS__ . '/' . __FUNCTION__, $value);
+		###_log(__CLASS__ . '/' . __FUNCTION__, $value);
 		
 		// known placeholders
 		switch($value) {
