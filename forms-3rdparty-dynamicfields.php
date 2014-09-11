@@ -142,11 +142,11 @@ class Forms3rdpartyDynamicFields {
 			case self::NETWORKSITEURL:
 				return network_site_url();
 			case self::REFERER:
-				return $_SERVER['HTTP_REFERER'];
+				return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 			case self::ADMINEMAIL:
 				return get_bloginfo('admin_email'); // TODO: is there a way to protect against this?
 			case self::PAGEURL:
-				return get_site_url() . get_permalink();
+				return get_permalink();
 			case self::REQUESTURL:
 				return sprintf('http%s://', is_ssl() ? 's' : '') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			default:
