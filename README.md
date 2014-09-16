@@ -1,6 +1,6 @@
 # Forms: 3rd-Party Dynamic Fields #
 
-**Contributors:** zaus, skane
+**Contributors:** zaus, spkane
 
 **Donate link:** http://drzaus.com/donate
 

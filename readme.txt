@@ -1,5 +1,5 @@
 === Forms: 3rd-Party Dynamic Fields ===
-Contributors: zaus, skane
+Contributors: zaus, spkane
 Donate link: http://drzaus.com/donate
 Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params, referer
 Requires at least: 3.0
