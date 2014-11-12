@@ -55,7 +55,9 @@ class Forms3rdpartyDynamicFields {
 	const REQUESTURL = "##REQUESTURL##";
 	const REFERER = "##REFERER##";
 	const GETPARAM_PREFIX = "##GET:{";
-	const PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
+	const COOKIEPARAM_PREFIX = "##COOKIE:{";
+	const GET_PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
+	const COOKIE_PREFIX_LEN = 10; // the length of COOKIEPARAM_PREFIX
 
 	/**
 	 * placeholder for response attachments
@@ -121,6 +123,7 @@ class Forms3rdpartyDynamicFields {
 				}
 
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
+				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) return true;
 
 				break;
 		} // switch $value
@@ -165,8 +168,13 @@ class Forms3rdpartyDynamicFields {
 				}
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) {
 					// strip the rest of the param mask for the get key
-					$value = substr($value, self::PREFIX_LEN, -3);
+					$value = substr($value, self::GET_PREFIX_LEN, -3);
 					return isset($_GET[ $value ]) ? $_GET[ $value ] : null;
+				}
+				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) {
+					// strip the rest of the param mask for the get key
+					$value = substr($value, self::COOKIE_PREFIX_LEN, -3);
+					return isset($_COOKIES[ $value ]) ? $_COOKIES[ $value ] : null;
 				}
 
 				break;
@@ -304,6 +312,12 @@ class Forms3rdpartyDynamicFields {
 							<td class="dyn-field"><code><?php echo $t ?>page}##</code></td>
 							<td><?php echo $this->replace($t . 'page}##'); ?></td>
 							<td><?php _e('The indicated GET parameter (i.e. <code>?page=...</code>, indicated here with <code>{page}</code>)', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::COOKIEPARAM_PREFIX; $v = 'wordpress_test_cookie'; ?>
+							<td class="dyn-field"><code><?php echo $t, $v ?>}##</code></td>
+							<td><?php echo $this->replace($t . $v . '}##'); ?></td>
+							<td><?php _e('The indicated COOKIE parameter', $P) ?></td>
 						</tr>
 					</tbody>
 				</table>
