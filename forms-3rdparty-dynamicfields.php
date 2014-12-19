@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.4
+Version: 0.4.1
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -310,7 +310,13 @@ class Forms3rdpartyDynamicFields {
 							<?php $t = self::REFERER; ?>
 							<td class="dyn-field"><code><?php echo $t ?></code></td>
 							<td><?php echo $this->replace($t); ?></td>
-							<td><?php _e('Referer for the current page', $P) ?></td>
+							<td><?php _e('Referer for the current page, according to PHP', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::WPREFERER; ?>
+							<td class="dyn-field"><code><?php echo $t ?></code></td>
+							<td><?php echo $this->replace($t); ?></td>
+							<td><?php _e('Referer for the current page, according to Wordpress', $P) ?></td>
 						</tr>
 						<tr>
 							<?php $t = self::GETPARAM_PREFIX; ?>

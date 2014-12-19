@@ -61,19 +61,21 @@ Use the placeholder `##COOKIE:{hamburgler}##` as the static value, which will at
 
 ### What else can I attach? ###
 
+These are also listed within the plugin settings under the "[?] Dynamic Placeholder Examples" metabox -- double click each option for automatic entry.  Live "example previews" are also shown for each within the metabox.
+
 * `##TIMESTAMP##` = the current timestamp (from [`time`](http://php.net/manual/en/function.time.php))
 * `##DATE_ISO##` = date, formatted to ISO 8601 "Y-m-d\TH:i:sP" (PHP5)
 * `##DATE##` = wordpress-formatted current date (`date_i18n( get_option('date_format'), time() );`)
 * `##TIME##` = wordpress-formatted current date (`date_i18n( get_option('date_format'), time() );`)
 * `##UID##` = a unique id
-* `##SITEURL##` = the site url, according to wordpress
-* `##NETWORKSITEURL##` = the network site url, according to wordpress
-* `##SITENAME##` = the site name, according to wordpress
-* `##ADMINEMAIL##` = the admin email, according to wordpress
-* `##PAGEURL##` = the current page (permalink) that has the form, according to wordpress
+* `##SITEURL##` = the site url, according to wordpress ([`get_site_url`](http://codex.wordpress.org/Function_Reference/get_site_url))
+* `##NETWORKSITEURL##` = the network site url, according to wordpress ([`network_site_url`](http://codex.wordpress.org/Function_Reference/network_site_url))
+* `##SITENAME##` = the site name, according to wordpress (`get_bloginfo('name')`)
+* `##ADMINEMAIL##` = the admin email, according to wordpress (`get_bloginfo('admin_email')`)
+* `##PAGEURL##` = the current page (permalink) that has the form, according to wordpress ([`get_permalink`](http://codex.wordpress.org/Function_Reference/get_permalink))
 * `##REQUESTURL##` = the current page, according to PHP
 * `##REFERER##` = the referer, according to PHP
-* `##WPREFERER##` = the referer, according to wordpress
+* `##WPREFERER##` = the referer, according to wordpress ([`wp_get_referer`](http://codex.wordpress.org/Function_Reference/wp_get_referer))
 * `##GET:{` = prefix to attach querystring parameters (see section above)
 * `##COOKIE:{` = prefix to attach cookies (see section above)
 
@@ -82,6 +84,13 @@ Use the placeholder `##COOKIE:{hamburgler}##` as the static value, which will at
 __None available.__
 
 ## Changelog ##
+
+### 0.4 ###
+Addressed github issues #1, #2, #3
+
+* wpreferer
+* explicit mention of how to use in readme (already in plugin metabox)
+* cookies
 
 ### 0.3.3 ###
 Minor bugfixes to pageurl and referer
