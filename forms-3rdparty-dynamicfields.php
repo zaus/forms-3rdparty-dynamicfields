@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.3.4
+Version: 0.4
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -13,6 +13,7 @@ Changelog:
 	0.3 GET params
 	0.3.2 referer
 	0.3.3 bugfixes
+	0.4 cookies (#2), wpreferer (#3), options in readme (#1)
 */
 
 
@@ -54,6 +55,7 @@ class Forms3rdpartyDynamicFields {
 	const PAGEURL = '##PAGEURL##';
 	const REQUESTURL = "##REQUESTURL##";
 	const REFERER = "##REFERER##";
+	const WPREFERER = "##WPREFERER##";
 	const GETPARAM_PREFIX = "##GET:{";
 	const COOKIEPARAM_PREFIX = "##COOKIE:{";
 	const GET_PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
@@ -113,6 +115,7 @@ class Forms3rdpartyDynamicFields {
 			case self::NETWORKSITEURL:
 			case self::ADMINEMAIL:
 			case self::REFERER:
+			case self::WPREFERER:
 			case self::PAGEURL:
 			case self::REQUESTURL:
 				return true;
@@ -151,6 +154,8 @@ class Forms3rdpartyDynamicFields {
 				return get_bloginfo('name');
 			case self::NETWORKSITEURL:
 				return network_site_url();
+			case self::WPREFERER:
+				return wp_get_referer();
 			case self::REFERER:
 				return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 			case self::ADMINEMAIL:
