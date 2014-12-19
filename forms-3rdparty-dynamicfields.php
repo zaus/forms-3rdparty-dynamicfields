@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.4.1
+Version: 0.4.2
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -179,7 +179,7 @@ class Forms3rdpartyDynamicFields {
 				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) {
 					// strip the rest of the param mask for the get key
 					$value = substr($value, self::COOKIE_PREFIX_LEN, -3);
-					return isset($_COOKIES[ $value ]) ? $_COOKIES[ $value ] : null;
+					return isset($_COOKIE[ $value ]) ? $_COOKIE[ $value ] : null;
 				}
 
 				break;
