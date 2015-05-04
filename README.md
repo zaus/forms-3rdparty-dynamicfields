@@ -28,7 +28,7 @@ Using pre-configured placeholders like `##UID##`, `##REFERER##`, or `##SITEURL##
 3. Activate plugin
 4. Go to new admin subpage _"3rdparty Services"_ under the CF7 "Contact" menu or Gravity Forms "Forms" menu and configure services + field mapping.
 5. Configure the new "Dynamic Fields" section to optionally attach the dynamic values to the notification messaging (and how)
-6. Using the additional collapsed metabox for examples, add dynamic placeholders as "static values" to the service mapping.  Double-click examples to populate each textbox after selecting it.
+6. Using the additional collapsed metabox for examples, add dynamic placeholders as "static values" to the service mapping (check 'Is Value?' column).  Double-click examples to populate each textbox after selecting it.
 
 [Contact Form 7]: http://wordpress.org/extend/plugins/contact-form-7/ "Contact Form 7"
 
@@ -51,6 +51,8 @@ See "base plugin" [Forms: 3rdparty Integration](http://wordpress.org/plugins/for
 
 Expand the box "Dynamic Placeholder Examples" below the 'save' button for allowed dynamic fields.
 
+Additionally, you'll need to check the 'Is Value?' column.
+
 ### How do I add GET parameters to my service post? ###
 
 Use the placeholder `##GET:{urlparam}##` as the static value, which will attach the value `XYZ` from the url in `?urlparam=XYZ`.
@@ -68,6 +70,7 @@ These are also listed within the plugin settings under the "[?] Dynamic Placehol
 * `##DATE##` = wordpress-formatted current date (`date_i18n( get_option('date_format'), time() );`)
 * `##TIME##` = wordpress-formatted current date (`date_i18n( get_option('date_format'), time() );`)
 * `##UID##` = a unique id
+* `##IP##` = the visitor IP
 * `##SITEURL##` = the site url, according to wordpress ([`get_site_url`](http://codex.wordpress.org/Function_Reference/get_site_url))
 * `##NETWORKSITEURL##` = the network site url, according to wordpress ([`network_site_url`](http://codex.wordpress.org/Function_Reference/network_site_url))
 * `##SITENAME##` = the site name, according to wordpress (`get_bloginfo('name')`)
@@ -78,12 +81,20 @@ These are also listed within the plugin settings under the "[?] Dynamic Placehol
 * `##WPREFERER##` = the referer, according to wordpress ([`wp_get_referer`](http://codex.wordpress.org/Function_Reference/wp_get_referer))
 * `##GET:{` = prefix to attach querystring parameters (see section above)
 * `##COOKIE:{` = prefix to attach cookies (see section above)
+* `=` = prefix to perform calculations on other input fields, like `{input_1} / 12 + round({input_2} / 2)`
+
 
 ## Screenshots ##
 
 __None available.__
 
 ## Changelog ##
+
+### 0.6 ###
+* calculations via prefix `=` using non-eval parser https://github.com/jlawrence11/eos
+
+### 0.5 ###
+* IP
 
 ### 0.4 ###
 Addressed github issues #1, #2, #3

@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.4.2
+Version: 0.6
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -14,6 +14,8 @@ Changelog:
 	0.3.2 referer
 	0.3.3 bugfixes
 	0.4 cookies (#2), wpreferer (#3), options in readme (#1)
+	0.5 ip
+	0.6 calc
 */
 
 
@@ -25,7 +27,7 @@ class Forms3rdpartyDynamicFields {
 
 	public function Forms3rdpartyDynamicFields() {
 		// only first form
-		add_filter(self::B.'_service_filter_post', array(&$this, 'post_filter'), 10, 3);
+		add_filter(self::B.'_service_filter_post', array(&$this, 'post_filter'), 10, 5);
 		
 		// just provides a listing of placeholders
 		add_filter(self::B.'_service_metabox_after', array(&$this, 'service_metabox'), 10, 4);
@@ -56,8 +58,10 @@ class Forms3rdpartyDynamicFields {
 	const REQUESTURL = "##REQUESTURL##";
 	const REFERER = "##REFERER##";
 	const WPREFERER = "##WPREFERER##";
+	const IP = "##IP##";
 	const GETPARAM_PREFIX = "##GET:{";
 	const COOKIEPARAM_PREFIX = "##COOKIE:{";
+	const CALC_PREFIX = "=";
 	const GET_PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
 	const COOKIE_PREFIX_LEN = 10; // the length of COOKIEPARAM_PREFIX
 
@@ -66,9 +70,10 @@ class Forms3rdpartyDynamicFields {
 	 */
 	private $_dynamic_attach;
 
-	public function post_filter($post, $service, $form) {
+	public function post_filter($post, $service, $form, $sid, $submission) {
 
 		###_log(__CLASS__ . '::' . __METHOD__, $form);
+		###_log(__CLASS__ . '::' . __METHOD__, $sid);
 
 		// if(isset($service['dynamic-field']) && isset($service['dynamic-value'])) $post[$service['dynamic-field']] = $service['dynamic-value'];
 
@@ -80,7 +85,7 @@ class Forms3rdpartyDynamicFields {
 			// TODO: check for multiple tokens?
 			// TODO: better way to check and replace?
 			if( $this->is_replace($value) ) {
-				$value = $this->replace($value, $post);
+				$value = $this->replace($value, $post, $submission);
 
 				// attach ONLY the dynamic fields, since those are 'insensitive' values
 				// like page url, unique id, etc -- this is per original requirement
@@ -116,6 +121,7 @@ class Forms3rdpartyDynamicFields {
 			case self::ADMINEMAIL:
 			case self::REFERER:
 			case self::WPREFERER:
+			case self::IP:
 			case self::PAGEURL:
 			case self::REQUESTURL:
 				return true;
@@ -127,6 +133,7 @@ class Forms3rdpartyDynamicFields {
 
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
 				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) return true;
+				elseif(0 === strpos($value, self::CALC_PREFIX)) return true;
 
 				break;
 		} // switch $value
@@ -135,7 +142,7 @@ class Forms3rdpartyDynamicFields {
 	}
 
 
-	public function replace($value, $post = false) {
+	public function replace($value, $post = false, $submission = array()) {
 		// known placeholders
 		switch($value) {
 			case self::TIMESTAMP:
@@ -164,6 +171,17 @@ class Forms3rdpartyDynamicFields {
 				return get_permalink();
 			case self::REQUESTURL:
 				return sprintf('http%s://', is_ssl() ? 's' : '') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			case self::IP:
+				// http://www.wpbeginner.com/wp-tutorials/how-to-display-a-users-ip-address-in-wordpress/
+				if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+					//check ip from share internet
+					return $_SERVER['HTTP_CLIENT_IP'];
+				} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+					//to check ip is pass from proxy
+					return $_SERVER['HTTP_X_FORWARDED_FOR'];
+				} else {
+					return $_SERVER['REMOTE_ADDR'];
+				}
 			default:
 				// because forms-3rdparty can also nest
 				if(is_array($value)) {
@@ -181,6 +199,11 @@ class Forms3rdpartyDynamicFields {
 					$value = substr($value, self::COOKIE_PREFIX_LEN, -3);
 					return isset($_COOKIE[ $value ]) ? $_COOKIE[ $value ] : null;
 				}
+				elseif(0 === strpos($value, self::CALC_PREFIX)) {
+					// strip the rest of the param mask for the get key
+					$value = substr($value, 1);
+					return $this->calc($value, $submission);
+				}
 
 				break;
 		} // switch $value
@@ -194,6 +217,44 @@ class Forms3rdpartyDynamicFields {
 		}
 	}
 
+	private $eos;
+
+	public function calc($fn, $post) {
+		// parse out tokens
+		$tokens = array();
+		preg_match_all('/[{[](.*?)[}\]]/', $fn, $tokens);
+
+		// nothing to work on; skip
+		if(!isset($tokens[1]) || empty($tokens[1])) return $fn;
+
+		// reformat placeholder syntax for parsing;
+		// easiest way is to replace placeholders with their post values rather than variables
+		
+		// build replacement array
+		$repl = array();
+		foreach($tokens[1] as $i => $token) {
+			if(!isset($post[$token])) {
+				// remove unfound token from possibles
+				unset($tokens[0][$i]);
+				continue;
+			}
+			// add to possible
+			$repl []= $post[$token];
+		}
+		###_log('will calc with', array('post' => $post, 'search' => $tokens[0], 'repl' => $repl, 'fn' => $fn));
+		$fn = str_replace($tokens[0], $repl, $fn);
+
+		// ready parser; safer than `eval`
+		if( ! class_exists('jlawrence\eos\Parser') ) {
+			require_once('Stack.php');
+			require_once('Parser.php');
+		}
+		if(!isset($this->eos)) $this->eos = new \jlawrence\eos\Parser();
+
+		$value = $this->eos->solveIF($fn);
+		
+		return $value;
+	}
 
 
 	public function service_settings($eid, $P, $entity) {
@@ -201,6 +262,8 @@ class Forms3rdpartyDynamicFields {
 
 			<fieldset><legend><span><?php _e('Dynamic Fields', $P); ?></span></legend>
 				<div class="inside">
+					<em class="description">Note that you will need to check the 'Is Value?' column for the dynamic fields to work.</em>
+
 					<?php $field = 'dynamic-attach'; ?>
 					<div class="field">
 						<label for="<?php echo $field, '-', $eid ?>"><?php _e('Attach dynamic fields?', $P); ?></label>
@@ -329,6 +392,16 @@ class Forms3rdpartyDynamicFields {
 							<td class="dyn-field"><code><?php echo $t, $v ?>}##</code></td>
 							<td><?php echo $this->replace($t . $v . '}##'); ?></td>
 							<td><?php _e('The indicated COOKIE parameter', $P) ?></td>
+						</tr>
+						<tr>
+							<?php
+							$t = self::CALC_PREFIX;
+							$v = '{input_1} + 2 * {input_2}';
+							$a = array('input_1' => 10, 'input_2' => 3);
+							?>
+							<td class="dyn-field"><code><?php echo $t, $v ?></code></td>
+							<td><?php echo $this->calc($t . $v, $a), ' <em> (from <code>', print_r($a, true); ?></code>)</em></td>
+							<td><?php _e('The equation using the given post parameters, like regular mapping', $P) ?></td>
 						</tr>
 					</tbody>
 				</table>
