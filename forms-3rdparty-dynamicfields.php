@@ -224,7 +224,6 @@ class Forms3rdpartyDynamicFields {
 		$tokens = array();
 		preg_match_all('/[{[](.*?)[}\]]/', $fn, $tokens);
 
-		_log('calc tokens', $tokens);
 		// nothing to work on; skip
 		if(!isset($tokens[1]) || empty($tokens[1])) return $fn;
 
@@ -242,10 +241,8 @@ class Forms3rdpartyDynamicFields {
 			// add to possible
 			$repl []= $post[$token];
 		}
-		_log('will calc with', array('post' => $post, 'search' => $tokens[0], 'repl' => $repl, 'fn' => $fn));
+		##_log('will calc with', array('post' => $post, 'search' => $tokens[0], 'repl' => $repl, 'fn' => $fn));
 		$fn = str_replace($tokens[0], $repl, $fn);
-
-		_log('fn=' . $fn);
 
 		// ready parser; safer than `eval`
 		if( ! class_exists('jlawrence\eos\Parser') ) {
@@ -255,7 +252,6 @@ class Forms3rdpartyDynamicFields {
 		if(!isset($this->eos)) $this->eos = new jlawrence\eos\Parser();
 
 		$value = $this->eos->solveIF($fn);
-		_log('fn=' . $value);
 
 		return $value;
 	}
