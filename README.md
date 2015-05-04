@@ -28,7 +28,7 @@ Using pre-configured placeholders like `##UID##`, `##REFERER##`, or `##SITEURL##
 3. Activate plugin
 4. Go to new admin subpage _"3rdparty Services"_ under the CF7 "Contact" menu or Gravity Forms "Forms" menu and configure services + field mapping.
 5. Configure the new "Dynamic Fields" section to optionally attach the dynamic values to the notification messaging (and how)
-6. Using the additional collapsed metabox for examples, add dynamic placeholders as "static values" to the service mapping.  Double-click examples to populate each textbox after selecting it.
+6. Using the additional collapsed metabox for examples, add dynamic placeholders as "static values" to the service mapping (check 'Is Value?' column).  Double-click examples to populate each textbox after selecting it.
 
 [Contact Form 7]: http://wordpress.org/extend/plugins/contact-form-7/ "Contact Form 7"
 
@@ -91,7 +91,7 @@ __None available.__
 ## Changelog ##
 
 ### 0.6 ###
-* calculations via `=`
+* calculations via prefix `=` using non-eval parser https://github.com/jlawrence11/eos
 
 ### 0.5 ###
 * IP

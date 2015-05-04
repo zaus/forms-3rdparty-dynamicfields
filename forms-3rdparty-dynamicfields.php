@@ -241,7 +241,7 @@ class Forms3rdpartyDynamicFields {
 			// add to possible
 			$repl []= $post[$token];
 		}
-		##_log('will calc with', array('post' => $post, 'search' => $tokens[0], 'repl' => $repl, 'fn' => $fn));
+		###_log('will calc with', array('post' => $post, 'search' => $tokens[0], 'repl' => $repl, 'fn' => $fn));
 		$fn = str_replace($tokens[0], $repl, $fn);
 
 		// ready parser; safer than `eval`
@@ -249,10 +249,10 @@ class Forms3rdpartyDynamicFields {
 			require_once('Stack.php');
 			require_once('Parser.php');
 		}
-		if(!isset($this->eos)) $this->eos = new jlawrence\eos\Parser();
+		if(!isset($this->eos)) $this->eos = new \jlawrence\eos\Parser();
 
 		$value = $this->eos->solveIF($fn);
-
+		
 		return $value;
 	}
 
