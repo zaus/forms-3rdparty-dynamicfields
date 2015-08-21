@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.6
+Version: 0.6.1
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
