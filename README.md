@@ -90,6 +90,9 @@ __None available.__
 
 ## Changelog ##
 
+### 0.6.1 ###
+* fix: added missing Parser files; so embarrassed (^_^;)
+
 ### 0.6 ###
 * calculations via prefix `=` using non-eval parser https://github.com/jlawrence11/eos
 
