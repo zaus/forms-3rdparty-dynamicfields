@@ -78,6 +78,9 @@ __None available.__
 
 == Changelog ==
 
+= 0.6.2 =
+- still fixing missing Parser files; updated to latest from EOS repo
+
 = 0.6.1 =
 - fix: added missing Parser files; so embarrassed (^_^;)
 
