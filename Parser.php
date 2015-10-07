@@ -20,7 +20,6 @@
 
 namespace jlawrence\eos;
 
-
 /**
  * Equation Operating System (EOS) Parser
  *

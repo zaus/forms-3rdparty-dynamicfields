@@ -248,6 +248,7 @@ class Forms3rdpartyDynamicFields {
 		if( ! class_exists('jlawrence\eos\Parser') ) {
 			require_once('Stack.php');
 			require_once('Parser.php');
+			require_once('AdvancedFunctions.php');
 		}
 		if(!isset($this->eos)) $this->eos = new \jlawrence\eos\Parser();
 
