@@ -16,6 +16,7 @@ Changelog:
 	0.4 cookies (#2), wpreferer (#3), options in readme (#1)
 	0.5 ip
 	0.6 calc
+	0.7 session
 */
 
 
@@ -61,9 +62,11 @@ class Forms3rdpartyDynamicFields {
 	const IP = "##IP##";
 	const GETPARAM_PREFIX = "##GET:{";
 	const COOKIEPARAM_PREFIX = "##COOKIE:{";
+	const SESSIONPARAM_PREFIX = "##SESSION:{";
 	const CALC_PREFIX = "=";
 	const GET_PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
 	const COOKIE_PREFIX_LEN = 10; // the length of COOKIEPARAM_PREFIX
+	const SESSION_PREFIX_LEN = 11; // the length of SESSIONPARAM_PREFIX
 
 	/**
 	 * placeholder for response attachments
@@ -133,6 +136,7 @@ class Forms3rdpartyDynamicFields {
 
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
 				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) return true;
+				elseif(0 === strpos($value, self::SESSIONPARAM_PREFIX)) return true;
 				elseif(0 === strpos($value, self::CALC_PREFIX)) return true;
 
 				break;
@@ -198,6 +202,11 @@ class Forms3rdpartyDynamicFields {
 					// strip the rest of the param mask for the get key
 					$value = substr($value, self::COOKIE_PREFIX_LEN, -3);
 					return isset($_COOKIE[ $value ]) ? $_COOKIE[ $value ] : null;
+				}
+				elseif(0 === strpos($value, self::SESSIONPARAM_PREFIX)) {
+					// strip the rest of the param mask for the get key
+					$value = substr($value, self::SESSION_PREFIX_LEN, -3);
+					return isset($_SESSION[ $value ]) ? $_SESSION[ $value ] : null;
 				}
 				elseif(0 === strpos($value, self::CALC_PREFIX)) {
 					// strip the rest of the param mask for the get key
@@ -393,6 +402,12 @@ class Forms3rdpartyDynamicFields {
 							<td class="dyn-field"><code><?php echo $t, $v ?>}##</code></td>
 							<td><?php echo $this->replace($t . $v . '}##'); ?></td>
 							<td><?php _e('The indicated COOKIE parameter', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::SESSIONPARAM_PREFIX; $v = 'wordpress_test_cookie'; ?>
+							<td class="dyn-field"><code><?php echo $t, $v ?>}##</code></td>
+							<td><em>(<?php _e('Only available if you have enabled sessions', $P) ?>)</em></td>
+							<td><?php _e('The indicated SESSION parameter', $P) ?></td>
 						</tr>
 						<tr>
 							<?php

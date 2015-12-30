@@ -81,6 +81,7 @@ These are also listed within the plugin settings under the "[?] Dynamic Placehol
 * `##WPREFERER##` = the referer, according to wordpress ([`wp_get_referer`](http://codex.wordpress.org/Function_Reference/wp_get_referer))
 * `##GET:{` = prefix to attach querystring parameters (see section above)
 * `##COOKIE:{` = prefix to attach cookies (see section above)
+* `##SESSION:{` = prefix to attach sessions (see section above)
 * `=` = prefix to perform calculations on other input fields, like `{input_1} / 12 + round({input_2} / 2)`
 
 
@@ -89,6 +90,9 @@ These are also listed within the plugin settings under the "[?] Dynamic Placehol
 __None available.__
 
 ## Changelog ##
+
+### 0.7 ###
+* sessions
 
 ### 0.6.2 ###
 * still fixing missing Parser files; updated to latest from EOS repo
