@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.7
+Version: 0.7.2
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -17,6 +17,7 @@ Changelog:
 	0.5 ip
 	0.6 calc
 	0.7 session
+	0.7.2 bugfixes for session, nested replace
 */
 
 
@@ -136,7 +137,11 @@ class Forms3rdpartyDynamicFields {
 
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
 				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) return true;
-				elseif(0 === strpos($value, self::SESSIONPARAM_PREFIX)) return true;
+				elseif(0 === strpos($value, self::SESSIONPARAM_PREFIX)) {
+					// must start the session before being able to access later, so might as well here
+					if(!session_id()) session_start();
+					return true;
+				}
 				elseif(0 === strpos($value, self::CALC_PREFIX)) return true;
 
 				break;
@@ -190,7 +195,7 @@ class Forms3rdpartyDynamicFields {
 				// because forms-3rdparty can also nest
 				if(is_array($value)) {
 					foreach($value as $k => &$v) {
-						$v = replace($value, $post);
+						$v = $this->replace($value, $post, $submission);
 					}
 				}
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) {

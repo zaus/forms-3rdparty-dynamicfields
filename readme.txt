@@ -3,7 +3,7 @@ Contributors: zaus, spkane
 Donate link: http://drzaus.com/donate
 Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params, referer
 Requires at least: 3.0
-Tested up to: 4.1
+Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -78,6 +78,9 @@ These are also listed within the plugin settings under the "[?] Dynamic Placehol
 __None available.__
 
 == Changelog ==
+
+= 0.7.2 =
+bugfixes for session start, nested replace
 
 = 0.7 =
 - sessions

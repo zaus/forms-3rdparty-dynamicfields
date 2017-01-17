@@ -91,6 +91,9 @@ __None available.__
 
 ## Changelog ##
 
+### 0.7.2 ###
+bugfixes for session start, nested replace
+
 ### 0.7 ###
 * sessions
 
