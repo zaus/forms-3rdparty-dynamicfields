@@ -270,7 +270,7 @@ class Forms3rdpartyDynamicFields {
 	public function service_settings($eid, $P, $entity) {
 		?>
 
-			<fieldset><legend><span><?php _e('Dynamic Fields', $P); ?></span></legend>
+			<fieldset class="postbox"><legend class="hndle"><span><?php _e('Dynamic Fields', $P); ?></span></legend>
 				<div class="inside">
 					<em class="description">Note that you will need to check the 'Is Value?' column for the dynamic fields to work.</em>
 
