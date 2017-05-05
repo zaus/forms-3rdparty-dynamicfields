@@ -27,7 +27,7 @@ class Forms3rdpartyDynamicFields {
 	const N = 'Forms3rdpartyDynamicFields';
 	const B = 'Forms3rdPartyIntegration';
 
-	public function Forms3rdpartyDynamicFields() {
+	public function __construct() {
 		// only first form
 		add_filter(self::B.'_service_filter_post', array(&$this, 'post_filter'), 10, 5);
 		
